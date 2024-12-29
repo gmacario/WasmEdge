@@ -1,3 +1,128 @@
+### 0.15.0-alpha.1 (2025-01-20)
+
+Features:
+
+* [Component Model]
+  * Update import name rule (spec changes)
+  * Partial resource support
+  * Support more wasm interface types
+* [Executor] Save thread-local variables before executing the nested VM call (#3969)
+* [Runtime]
+  * coredump: Implement WASM Coredump feature when the trap occurs (#3860)
+  * coredump: fix type convert issue (#3948)
+* [Installer]
+  * v1: Show error message when it's triggered on Windows (#3925)
+  * v1: update the assets' urls for the 0.13.5 and 0.14.0 ggmlbn (#3895)
+  * v2: enhance the message for -c/--ggmlcuda (#3888)
+  * v2: give a better output for the usage of the --version option (#3778)
+  * v2: update the assets' urls for the 0.14.1 ggmlbn (#3891)
+  * v2: use 0.14.1 by default (#3848)
+* [LLVM] Support LLVM 19 (#3809)
+* [Log]
+  * Support all log levels in the API and add user callback support (#3789)
+  * Allow to unregister the log callback function. (#3915)
+* [Loader] Support more proposals in Serializer:
+  * Add Exception Handling proposal (#3876)
+  * Add tests for relaxed-SIMD instructions (#3800)
+  * Add Function References Instructions and their tests (#3759)
+  * Add GC proposal types and instructions with corresponding tests (#3821)
+  * Add tests for Typed Function References proposal's types (#3748)
+  * tests for composite and sub types (#3865)
+  * fix nested component load (#3938)
+* [Plugin] image: Use `stb_image` to replace the libpng and libjpeg.
+* [Plugin] Stable Diffusion:
+  * Bump to dcf91 (#3950)
+  * Add more test (#3843)
+  * Add option for enabling OpenMP (#3810)
+  * Fix the build failure on macOS metal
+  * Fix reuse context segment fault (#3824)
+  * Support clip\_g option
+* [Plugin] New proposals: implement wasi-poll poll-oneoff
+* [Plugin] wasm\_bpf: Fix error of poisoned identifier
+* [WASI-NN] Bump plugin version to 0.1.8
+* [WASI-NN] Torch backend:
+  * Update pytorch version (#3818, #3901)
+  * Support Torch AOTI
+* [WASI-NN] Refactor dependency cmake
+* [WASI-NN] add finalize\_execution\_context function  (#3917)
+* [WASI-NN] Refactor the graph and context management mechanism for all backends.
+* [WASI-NN] llama.cpp backend:
+  * Bump llama.cpp b4466
+  * Do not append SEP when get embeddings
+  * Fix accessing freed data after unload. (#3785)
+  * Fix `fmt::format` error in embedding (#3779)
+  * Fix reloading llama context
+  * Reload llama context if embedding status changed
+  * Support new vision models: Qwen2VL
+  * Support new options: seed, split-mode, and warmup
+  * Disable warmup by default to match previous behavior
+  * Use the cached image embed instead to reduce costs (#3964)
+* [WASI-NN] whisper.cpp backend:
+  * Fix the token timestamp option
+  * Move the whisper.cpp linking out of header.
+  * add more options: no-timestamp and audio-ctx (#3931)
+  * Support Metal on MacOS
+  * Support CUDA on Linux
+* [WASI-NN] mlx backend:
+  * Support `mlx` backend for the WASI-NN plugin
+* [WASI-NN] ChatTTS backend:
+  * fix GIL problem and do not call Py\_Finalize (#3940)
+* [WASI-NN] piper backend:
+  * extend the json\_input functionality to allow setting various parameters at runtime (#3825)
+  * fix arguments for target linking and including in piper patch (#3798)
+
+Fixed issues:
+
+* [Loader] fix nested-component loading (#3938, #3893)
+* [WASI] win: Use `ReadFile/WriteFile` instead of `ReadFileEx/WriteFileEx` (#3870)
+* [VM] Support VM.getFunctionList for the component instance
+* [WASI-crypto] fix: secretkey\_export on rsa with ENCODING\_PKCS8 (#3963)
+
+Tests:
+
+* [Component Model] Provide more CM tests for loading, validating, and executing phase
+* [Plugin] wasmedge\_zlib: Fix `-Wformat-truncation` warning
+
+Misc:
+
+* [CMake] Set the minimum required version of CMake to 3.18
+* [CMake] Link `libfmt` to the target in the static build (#3909)
+* [CMake] Apply the WasmEdge component in the cpack. (#3690)
+* [CMake] Add `zstd` for all platforms with llvm 16+
+* [CMake] Add option for disable cxx11-abi and turn off cxx11-abi on manylinux.
+* [CMake] Link libfmt to the target in the static build (#3909)
+* [CMake] Move the boost, libpng, and libjpeg dependency to the helper.
+* [Misc] add warning if the abi may incompatible
+* [Deps] Remove patch for fmt, add support fmt version 9, fix #3782
+* [Docs] update supported version to 0.14.1 (#3913)
+* [Docs] Update the GOVERNANCE, CONTRIBUTOR\_LADDER, and GOVERNANCE (#3927)
+* [Docs] Rust 1.84 uses wasm32-wasip1 instead of wasm32-wasi (#3965)
+* [Internal] Add fast string hash for speed
+
+CI:
+
+* [macOS] The minimum macOS version is set to macos-13
+* [Linux] Deprecated all CI workflows related to the manylinux2014 image
+* [nix] flake update and use llvm18 (#3839)
+* [Misc] Fix build fail in Windows Server 2022 CI (#3899)
+* [CI] Bump `clang-format` version from 15 to 18
+* [CI] Windows: disable progress bar when installing via choco
+* [CI] Windows: use the preinstalled cmake as a workaround
+* [CI] Bump docker/bake-action from 5 to 6 (#3971)
+* [CI] Bump advanced-security/sbom-generator-action from 0.0.1 to 0.0.2 (#3970)
+
+Known issues:
+
+* Universal WASM format failed on macOS platforms.
+  * In the current status, the universal WASM format output of the AOT compiler with the `O1` or upper optimizations on MacOS platforms will cause a bus error during execution.
+  * We are trying to fix this issue. For a working around, please use the `--optimize=0` to set the compiler optimization level to `O0` in `wasmedgec` CLI.
+
+Thank all the contributors who made this release possible!
+
+Deveshi Dwivedi, Dmytrol, Han-Wen Tsao, LFsWang, Lîm Tsú-thuàn, Oleg, PeterD1524, Ruslan Tushov, Shen-Ta Hsieh, Sylveon, Tenderyi, Vladimir Cherkasov, Yi Huang, YiYing He, abdelkoddous LHAJOUJI, alabulei1, dependabot[bot], dm4, elhewaty, fancybody, grorge, hydai, junxiangMu, omahs, vincent,
+
+If you want to build from source, please use WasmEdge-0.15.0-alpha.1-src.tar.gz instead of the zip or tarball provided by GitHub directly.
+
 ### 0.14.1 (2024-09-16)
 
 Features:
